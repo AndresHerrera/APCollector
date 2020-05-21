@@ -1,1 +1,1 @@
-"# APCollector" 
+# APCollector
