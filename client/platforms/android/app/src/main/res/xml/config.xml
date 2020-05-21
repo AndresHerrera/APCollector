@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="org.apcollector.client" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+    <feature name="Battery">
+        <param name="android-package" value="org.apache.cordova.batterystatus.BatteryListener" />
+    </feature>
+    <feature name="Camera">
+        <param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
+    </feature>
+    <feature name="File">
+        <param name="android-package" value="org.apache.cordova.file.FileUtils" />
+        <param name="onload" value="true" />
+    </feature>
+    <allow-navigation href="cdvfile:*" />
+    <feature name="Capture">
+        <param name="android-package" value="org.apache.cordova.mediacapture.Capture" />
+    </feature>
+    <feature name="Device">
+        <param name="android-package" value="org.apache.cordova.device.Device" />
+    </feature>
+    <feature name="Notification">
+        <param name="android-package" value="org.apache.cordova.dialogs.Notification" />
+    </feature>
+    <feature name="Geolocation">
+        <param name="android-package" value="org.apache.cordova.geolocation.Geolocation" />
+    </feature>
+    <feature name="Globalization">
+        <param name="android-package" value="org.apache.cordova.globalization.Globalization" />
+    </feature>
+    <feature name="InAppBrowser">
+        <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
+    </feature>
+    <feature name="NetworkStatus">
+        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
+    </feature>
+    <feature name="Vibration">
+        <param name="android-package" value="org.apache.cordova.vibration.Vibration" />
+    </feature>
+    <feature name="CordovaHttpPlugin">
+        <param name="android-package" value="com.synconset.CordovaHttpPlugin" />
+    </feature>
+    <feature name="CordovaHttpPlugin">
+        <param name="android-package" value="com.silkimen.cordovahttp.CordovaHttpPlugin" />
+    </feature>
+    <feature name="Whitelist">
+        <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
+        <param name="onload" value="true" />
+    </feature>
+    <feature name="SplashScreen">
+        <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
+        <param name="onload" value="true" />
+    </feature>
+    <name>APCollector</name>
+    <description>
+        ApCollector 
+    </description>
+    <author email="fandresherrera@hotmail.com" href="https://github.com/AndresHerrera">
+       Andres Herrera
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <allow-navigation href="http://54.186.237.120/*" />
+    <icon density="ldpi" src="www/res/icon/android/ldpi.png" />
+    <icon density="mdpi" src="www/res/icon/android/mdpi.png" />
+    <icon density="hdpi" src="www/res/icon/android/hdpi.png" />
+    <icon density="xhdpi" src="www/res/icon/android/hdpi.png" />
+    <icon density="xxhdpi" src="www/res/icon/android/xxhdpi.png" />
+    <icon density="xxxhdpi" src="www/res/icon/android/xxxhdpi.png" />
+    <splash density="land-ldpi" src="www/res/screen/android/splash-port-ldpi.png" />
+    <splash density="land-mdpi" src="www/res/screen/android/splash-port-mdpi.png" />
+    <splash density="land-hdpi" src="www/res/screen/android/splash-port-hdpi.png" />
+    <splash density="land-xhdpi" src="www/res/screen/android/splash-port-xhdpi.png" />
+    <splash density="land-xxhdpi" src="www/res/screen/android/splash-port-xxhdpi.png" />
+    <splash density="land-xxxhdpi" src="www/res/screen/android/splash-port-xxxhdpi.png" />
+    <splash density="port-ldpi" src="www/res/screen/android/splash-port-ldpi.png" />
+    <splash density="port-mdpi" src="www/res/screen/android/splash-port-mdpi.png" />
+    <splash density="port-hdpi" src="www/res/screen/android/splash-port-hdpi.png" />
+    <splash density="port-xhdpi" src="www/res/screen/android/splash-port-xhdpi.png" />
+    <splash density="port-xxhdpi" src="www/res/screen/android/splash-port-xxhdpi.png" />
+    <splash density="port-xxxhdpi" src="www/res/screen/android/splash-port-xxxhdpi.png" />
+    <allow-intent href="market:*" />
+    <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+        <application android:usesCleartextTraffic="true" />
+    </edit-config>
+    <preference name="loglevel" value="DEBUG" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="android-minSdkVersion" value="19" />
+</widget>

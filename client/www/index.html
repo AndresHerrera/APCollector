@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" /> 
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta http-equiv="Content-Security-Policy" content="default-src *;img-src * 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src  'self' 'unsafe-inline' *">
+    <!-- <meta http-equiv="Content-Security-Policy" content="img-src 'self' data:; default-src * 'unsafe-inline' gap:; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link type="text/css" rel="stylesheet" href="css/fontawesome.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <title>APCollector v1.0</title>
+	
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+    <script src="js/leaflet/leaflet.js"></script>
+
+    <link rel="stylesheet" href="js/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.min.css" />
+	<script src="js/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.min.js"></script>
+   
+    
+    <script src="js/jquery-1.11.3.min.js"></script>
+    
+    <script>
+    $(document).on("mobileinit", function () 
+    {
+        $.mobile.hashListeningEnabled = false;
+        $.mobile.pushStateEnabled = false;
+        $.mobile.changePage.defaults.changeHash = false;
+    });
+    </script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    
+    
+    <script src="js/fastclick.js"></script>
+    <script src="js/inits.js"></script>
+    <script src="js/dbs.js"></script>
+
+    <script>
+    $(document).ready(function()
+    {
+        window.scrollTo(0, 1);
+        reloadCoords();
+    });
+	</script>
+</head>
+<body onLoad="init()">
+    <!------           Index Page           ---------->
+	<div data-role="page" id="main">
+		<div data-role="main" class="ui-content" style="padding: 0px;">
+        	<div data-role="panel" data-display="overlay" id="left-panel" data-position="left">
+                <div class="ui-panel-inner">
+                    <div class="tac">
+                        <a href="#" data-rel="close" class="ui-nodisc-icon">
+                            <img style="width:120px;height:100px" src="img/logo.png"/>
+                        </a>
+                    </div>
+                    <br>
+                    <ul data-role="listview">
+                        <!--
+                        <li data-icon="none" class="sidebar-li">
+                            <a href="#" data-rel="close" class="ui-nodisc-icon">&nbsp; Cerrar</a>
+                        </li>
+                        -->
+                        <li data-icon="none" class="sidebar-li" >
+                            <a href="javascript:openPage('home');" data-rel="close" class="ui-nodisc-icon">&nbsp; Principal</a>
+                        </li>
+                        <!--
+                        <li data-icon="none" class="sidebar-li" >
+                            <a href="javascript:openPage('mapid');" data-rel="close" class="ui-nodisc-icon">&nbsp; Mapa</a>
+                        </li>
+                        -->
+                        <!--
+                            <li data-icon="none" class="sidebar-li" >
+                                <a href="javascript:openPopup('info');" data-rel="close" class="ui-nodisc-icon">&nbsp; Informaci&oacute;n</a>
+                            </li>
+                        -->
+                        <li data-icon="none" class="sidebar-li" >
+                            <a href="javascript:openPage('settings')" data-rel="close" class="ui-nodisc-icon">&nbsp; Configuraci&oacute;n</a>
+                        </li>
+
+                        <li data-icon="none" class="sidebar-li" >
+                            <a href="javascript:backKeyDown();" data-rel="close" class="ui-nodisc-icon">&nbsp; Salir</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /panel -->
+
+            <div data-role="header" data-id="footer" id="footer">
+                <div>
+                    <a href="#left-panel" data-transition="none" class="tdn">
+                        <i id="notifnav" class="ui-icon-fa ui-icon-fa-bars navicon"></i>
+                    </a>
+                    <div id="navheading">APCollector</div>
+                    <a href="javascript:sett=true;datatoSend();" class="tdn" style="float:right;" id="uploadbtn">
+                        <i class="ui-icon-fa ui-icon-fa-cloud-upload navicon" style="padding-right: 0.2em;"></i>
+                    </a> 
+                    <a href="javascript:openPopup('info');" class="tdn" style="float:right;">
+                    	<i class="ui-icon-fa ui-icon-fa-info-circle navicon" style="padding-right: 0.2em;"></i>
+                    </a>
+                    <span class="ui-li-count ui-btn-corner-all countBubl" id="counter_s"></span>
+                </div>
+            </div>
+
+             <!-- Login Popup -->
+            <div data-role="popup" id="loginpop" class="popup" data-overlay-theme="b" data-dismissible="true">
+                <h1 style="position:relative;">
+                	<div>Informaci&oacute;n personal</div>
+                    <div class="cross">
+                          <a href="#" data-rel="back" class="tdn">
+                               <div><i class="ui-icon-fa ui-icon-fa-times"></i></div>
+                          </a>
+                    </div>
+                </h1>
+                <div role="main" class="popupIn">
+                    <!-- Everything Inside Popup -->
+                    <div id="loginh">
+                       Inicie sesi&oacute;n ingresando su nombre a continuaci&oacute;n.
+                    </div>
+                    <div>
+                    	<input type="text" id="unametxt" placeholder="Por favor ingrese su nombre (s) aqu&iacute;."/>
+                    </div>
+                    <div class="tac">
+                    	<a onclick="login();">
+                        	<div class="loginbutt pink-butt">
+                            	Ingresar
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+             <!-- Alert Popup -->
+            <div data-role="popup" id="alertpop" class="popup" data-overlay-theme="b" data-dismissible="true">
+                <h1 style="position:relative;">
+                	<div id="alerth"></div>
+                    <div class="cross">
+                          <a href="#" data-rel="back" class="tdn">
+                               <div><i class="ui-icon-fa ui-icon-fa-times"></i></div>
+                          </a>
+                    </div>
+                </h1>
+                <div role="main" class="popupIn">
+                    <!-- Everything Inside Popup -->
+                    <div id="alertIn">
+
+                    </div>
+                    <div style="text-align:right;">
+                          <a href="#" data-rel="back" class="tdn">
+                               <div><i class="ui-icon-fa ui-icon-fa-check"></i> Cerrar</div>
+                          </a>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Info Popup -->
+            <div data-role="popup" id="info" class="popup" data-overlay-theme="b" data-dismissible="true">
+                <h1 style="position:relative;">
+                	<div id="pad-h1">Informaci&oacute;n</div>
+                    <div class="cross">
+                          <a href="#" data-rel="back" class="tdn">
+                               <div><i class="ui-icon-fa ui-icon-fa-times"></i></div>
+                          </a>
+                    </div>
+                </h1>
+                <div role="main" class="popupIn">
+                    <div>
+                    	<h2 style="margin-bottom: 0.5em;">APCollector v1.0</h2>
+                    	<!-- 
+                            <ul>
+                        	   <li>Prueba simple de un collector de datos en campo</li>
+                            </ul>
+                        -->
+                    </div>
+                    <div style="text-align:right;">
+                          <a href="#" data-rel="back" class="tdn">
+                               <div><i class="ui-icon-fa ui-icon-fa-check"></i> Cerrar</div>
+                          </a>
+                    </div>
+                </div>
+            </div>
+
+<!-- FORM -->
+    <div id="home" class="apppage">
+        
+        <div class="survey">
+            <h2>
+                Coordenadas 
+                <a href="javascript:reloadCoords();">
+                    <i class="ui-icon-fa ui-icon-fa-map-marker" style="padding-right: 0.5em;"></i>
+                </a>
+            </h2>
+            <div>
+                <div class="cajas">
+                    <fieldset class="ui-grid-a" >
+                        <div class="ui-block-a" style="padding: 0 1em 0 0;">
+                            <label for="latitude">
+                               <input type="text" data-inline="true" placeholder="Enter a Lat" id="latitude" class="inputs"/>
+                           </label> 
+                        </div>
+                        <div class="ui-block-b" style="padding: 0 1em 0 0;">
+                            <label for="longitude">
+                                <input type="text" data-inline="true" placeholder="Enter a Lon" id="longitude" class="inputs"/>
+                            </label>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div> 
+
+        <div class="survey">
+            <h2>
+                Utilizar las coordenadas del GPS ?
+            </h2>
+            <div>
+                <div class="tac">
+                    <label for="usegpsy">
+                        <span>SI</span>
+                        <input type="checkbox" id="usegpsy" onclick="check('usegps',1)"/>
+                    </label>
+                    <label for="usegpsn">
+                        <span>NO</span>
+                        <input type="checkbox" id="usegpsn" onclick="check('usegps',0)"/>
+                    </label>
+                </div>
+            </div>
+            <span class="hide checks" id="usegps"></span>
+        </div>
+
+
+
+
+        <div class="survey">
+            <h2>
+                ID Punto 
+            </h2>
+            <div>
+                <div class="cajas">
+                    <label for="id_point">
+                        <input type="number" placeholder="Ingrese ID Punto" id="id_point" class="inputs"/>
+                    </label>
+                </div>
+            </div>
+        </div> 
+
+
+
+        <div class="survey">
+            <h2>
+                Plaga
+            </h2>
+            <div>
+                <div class="listado">
+                    <label for="plaga">
+                        <select id="plaga" name="plaga">
+                            <option data-id="plaga" value="-1">Seleccione</option>
+                            <option data-id="plaga" value="acaros">&Aacute;caros</option>
+                            <option data-id="plaga" value="trips">Trips (Scirtothrips perseae)</option>
+                            <option data-id="plaga" value="compus">Compsus (Compsus viridivitattus)</option>
+                            <option data-id="plaga" value="mosca_ovario">Mosca del ovario (Bruggmanniella persea)</option>
+                            <option data-id="plaga" value="marceno_phylophaga">Marceno (Phylophaga sp)</option>
+                            <option data-id="plaga" value="sinplaga-trips">Sin plaga-Trips(Scirtothrips perseae)</option>
+                          </select>
+                    </label>
+                </div>
+            </div>
+        </div> 
+
+
+        <div class="survey">
+            <h2>
+                Estado
+            </h2>
+            <div>
+                <div class="listado">
+                    <label for="estado">
+                        <select id="estado" name="estado">
+                            <option data-id="estado" value="-1">Seleccione</option>
+                            <option data-id="estado" value="adulto">Adulto</option>
+                            <option data-id="estado" value="huevo">Huevo</option>
+                            <option data-id="estado" value="larva">Larva</option>
+                            <option data-id="estado" value="ninfa">Ninfa</option>
+                          </select>
+                    </label>
+                </div>
+            </div>
+        </div> 
+
+
+
+
+        <div class="survey">
+            <h2>
+                N&deg; Ind/Planta
+            </h2>
+            <div  class="cajas"> 
+                <label for="nind_planta"></label>
+                    <input type="text" placeholder="N&deg; Ind/Planta" id="nind_planta" class="inputs" />
+                </label>
+            </div>
+        </div> 
+
+        <!--
+            <div class="survey">
+            <h2>
+                How old are you?
+            </h2>
+            <div>
+                <input type="text" placeholder="Enter an age" class="inputs"  id="age"/>
+            </div>
+        </div> 
+        -->
+        
+        <!--
+         <div class="survey">
+            <h2>
+                Are you Australian?
+            </h2>
+            <div>
+                <div class="tac">
+                    <label for="aoty">
+                        <span>Yes</span>
+                        <input type="checkbox" id="aoty" onclick="check('aot',1)"/>
+                    </label>
+                    <label for="aotn">
+                        <span>No</span>
+                        <input type="checkbox" id="aotn" onclick="check('aot',0)"/>
+                    </label>
+                </div>
+            </div>
+            <span class="hide checks" id="aot"></span>
+        </div>
+        -->
+
+        <!--
+        <div class="survey">
+            <h2>
+                Are you Gatito?
+            </h2>
+            <div>
+                <div class="tac">
+                    <label for="gaty">
+                        <span>Si</span>
+                        <input type="checkbox" id="gaty" onclick="check('gat',1)"/>
+                    </label>
+                    <label for="gatn">
+                        <span>No</span>
+                        <input type="checkbox" id="gatn" onclick="check('gat',0)"/>
+                    </label>
+                </div>
+            </div>
+            <span class="hide checks" id="gat"></span>
+        </div>
+    -->
+        <!--
+         <div class="survey">
+            <h2>
+                Would you consider studying at university?
+            </h2>
+            <div>
+                <div class="tac">
+                    <label for="uniy">
+                        <span>Yes</span>
+                        <input type="checkbox" id="uniy" onclick="check('uni',1)"/>
+                    </label>
+                    <label for="unin">
+                        <span>No</span>
+                        <input type="checkbox" id="unin" onclick="check('uni',0)"/>
+                    </label>
+                </div>
+            </div>
+            <span class="hide checks" id="uni"></span>
+        </div>
+    -->
+
+    <!--
+         <div class="survey">
+            <h2>
+                Do any of the following areas prevent you from studying?
+            </h2>
+            <div class="unir">
+                <div class="tac">
+                    <label for="family">
+                        <span>Family</span>
+                        <input type="checkbox" id="family"/>
+                    </label>
+                    <label for="money">
+                        <span>Financial</span>
+                        <input type="checkbox" id="money"/>
+                    </label>
+                </div>
+                <div class="tac">
+                    <label for="location">
+                        <span>Location</span>
+                        <input type="checkbox" id="location"/>
+                    </label>
+                    <label for="entry">
+                        <span>Entry Reqs.</span>
+                        <input type="checkbox" id="entry"/>
+                    </label>
+                </div>
+            </div>
+        </div>
+    -->
+
+    <!--
+        <div class="survey">
+            <h2>
+                Pruebita de listado de check
+            </h2>
+            <div class="unir">
+                <div class="tac">
+                    <label for="coso">
+                        <span>Coso</span>
+                        <input type="checkbox" id="coso"/>
+                    </label>
+                    <label for="gis">
+                        <span>Gis</span>
+                        <input type="checkbox" id="gis"/>
+                    </label>
+                </div>
+                <div class="tac">
+                    <label for="topo">
+                        <span>Topo</span>
+                        <input type="checkbox" id="topo"/>
+                    </label>
+                    <label for="mota">
+                        <span>MOta</span>
+                        <input type="checkbox" id="mota"/>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    -->
+
+        <div class="tac">
+            <a onclick="save();">
+                <div class="pink-butt" style="width: 65%;padding: 1em 0em;font-size: 1.5em;">
+                    Guardar Formulario
+                </div>
+            </a>
+        </div>
+
+        <div class="survey">
+            <h2>
+                Mapa
+            </h2>
+            <!-- MAP -->
+            <div id="mapid">
+            </div>
+            <!-- EOF MAP -->
+        </div>
+
+    </div>
+<!-- EOF FORM -->
+
+
+            <div id="settings" class="hide apppage overlay">
+            	<div class="settingsbox">
+                	<h1>Borrar Formulario</h1>
+                    <h2 class="tac" style="margin:1em 0em;">
+                    	Presione el bot&oacute;n a continuaci&oacute;n para restablecer el formulario.
+                    </h2>
+                    <div class="tac">
+                        <a onclick="resetForm();openPage('home');">
+                            <div class="pink-butt" style="width: 65%;padding: 1em 0em;font-size: 1.5em;margin-top:1em;">
+                                Borrar Formulario
+                            </div>
+                        </a>
+                    </div>
+                	<h1>Cambiar de Usuario</h1>
+                    <h2 class="tac" style="margin:1em 0em;">
+                        Cambiar el usuario principal del dispositivo.</h2>
+                    <div id="unamewrap" class="tac" style="font-size: 1.5em;">
+                    	Actualmente no ha iniciado sesi&oacute;n, inicie sesi&oacute;n presionando "Cambiar usuario".
+                    </div>
+                    <div class="tac">
+                    	<a onclick="openPopup('loginpop')">
+                        	<div class="pink-butt" style="width: 65%;padding: 1em 0em;font-size: 1.5em;">
+                            	Cambiar de usuario
+                            </div>
+                        </a>
+                    </div>
+                	<h1>Subir Formularios</h1>
+                    <h2 class="tac" style="margin:1em 0em;">Guardar todos los formularios en un servidor seguro</h2>
+                    <div id="saved" class="tac" style="font-size: 1.5em;">
+                    	Todos los formularios fuer&oacute;n enviados con exito !
+                    </div>
+                    <div class="tac">
+                    	<a href="javascript:sett=true;datatoSend();">
+                        	<div class="pink-butt" style="width: 65%;padding: 1em 0em;font-size: 1.5em;">
+                            	Guardar Formularios
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+		</div>
+   </div>
+</body>
+</html>

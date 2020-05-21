@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "APCollector",
+  "short_name": "APCollector",
+  "version": "org.apcollector.client",
+  "description": "ApCollector",
+  "author": "Andres Herrera",
+  "icons": [],
+  "start_url": "index.html"
+}

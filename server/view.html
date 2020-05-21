@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Visor Datos</title>
+	<link rel="stylesheet" href="lib/leaflet/leaflet.css" />
+	<script src="lib/leaflet/leaflet.js"></script>
+	<link rel="stylesheet" href="lib/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.min.css" />
+    <script src="lib/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.min.js"></script>
+    <script src="lib/jquery/jquery-3.4.1.js"></script>
+    
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #mapid {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="mapid"></div>
+
+<script>
+    
+    var cnt=0;
+
+	var basemaps = 
+	{		
+		Streets: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
+		{
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		})
+	};
+  
+	var mymap = L.map('mapid',
+	{
+		zoom: 10
+	}).setView([3.42335,-76.52086], 13);
+	
+	basemaps.Streets.addTo(mymap);
+
+    L.control.groupedLayers(basemaps).addTo(mymap);
+    
+    var capaGeojsonSitios = L.geoJson();
+    
+    function getPointsFromDB()
+    {
+        $.post("read.php",
+        {
+            peticion: 'get-data-from-view',
+            rnd: Math.random()
+        },
+        function(data, status)
+        {
+            if(status=='success')
+            {
+                mymap.removeLayer(capaGeojsonSitios); 
+                geojsonFeatureSitios= eval('('+data+')');
+                capaGeojsonSitios = L.geoJson(geojsonFeatureSitios, 
+                {
+                    pointToLayer: function (feature, latlng) 
+                    {
+                        var smallIcon = L.icon(
+                        {
+                            iconSize: [27, 27],
+                            iconAnchor: [13, 27],
+                            popupAnchor:  [1, -24],
+                            //iconUrl: 'images/icono_'+feature.properties.type+'.png' 
+                            iconUrl: 'img/marker.png' 
+                        });
+                        return L.marker(latlng, {icon: smallIcon}); 
+                    },onEachFeature: onEachFeatureSitios
+                            
+                } ).addTo(mymap);
+            }
+        });	
+
+        setTimeout(function()
+        { 
+            getPointsFromDB();
+            console.log('Page reloaded !');
+        }, 60000);
+    };
+    
+    function onEachFeatureSitios(feature, layer) 
+	{	
+		if (feature.properties && feature.properties.id) 
+		{
+            var obj_datos=eval('('+feature.properties.datos+')');
+            var mensaje = `
+                 <b>ID Punto: </b> ${feature.properties.id} <br>
+                 <b>Creado por: </b> ${feature.properties.uname} <br>
+                 <b>Fecha: </b> ${feature.properties.created} <br>`;
+            let entries = Object.entries(obj_datos);
+            for(const [prop, val] of entries) {
+                mensaje+=`<b>${prop}:</b> ${val} <br>`;
+            }
+			layer.bindPopup(mensaje);
+		}
+	}
+            
+    getPointsFromDB();
+</script>
+
+</body>
+</html>
